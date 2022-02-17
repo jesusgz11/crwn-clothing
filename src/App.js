@@ -11,6 +11,8 @@ import { setCurrentUserAction } from './redux/user/user.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import CheckoutPage from './pages/checkout/checkout.component';
+import CollectionPage from './pages/collection/collection.component';
+import CollectionsOverview from './components/collections-overview/collections-overview.component';
 
 class App extends React.Component {
   unsubscribeFormAuth = null;
@@ -25,10 +27,8 @@ class App extends React.Component {
       const userRef = await createUserProfileDocument(userAuth);
       userRef.onSnapshot((snapShot) => {
         setCurrentUser({
-          currentUser: {
-            id: snapShot.id,
-            ...snapShot.data(),
-          },
+          id: snapShot.id,
+          ...snapShot.data(),
         });
       });
     });
@@ -44,7 +44,10 @@ class App extends React.Component {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/*" element={<ShopPage />}>
+            <Route path="" element={<CollectionsOverview />} />
+            <Route path=":collectionId" element={<CollectionPage />} />
+          </Route>
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route
             path="/signin"
