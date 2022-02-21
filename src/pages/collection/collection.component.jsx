@@ -7,6 +7,7 @@ import {
   CollectionTitle,
   ItemsContainer,
 } from './collection.styles';
+import { compose } from 'redux';
 
 const CollectionPage = ({ collection }) => {
   const { title, items } = collection;
@@ -26,4 +27,4 @@ const mapStateToProps = (state, ownProps) => ({
   collection: selectShopCollection(ownProps.params.collectionId)(state),
 });
 
-export default withParams(connect(mapStateToProps)(CollectionPage));
+export default compose(withParams, connect(mapStateToProps))(CollectionPage);

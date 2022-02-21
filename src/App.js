@@ -5,39 +5,19 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in_and_sign_up/sign_in_and_sign_up.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { connect } from 'react-redux';
-import { setCurrentUserAction } from './redux/user/user.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import CheckoutPage from './pages/checkout/checkout.component';
-import CollectionPage from './pages/collection/collection.component';
-import CollectionsOverview from './components/collections-overview/collections-overview.component';
+import CollectionContainer from './pages/collection/collection.container';
+import CollectionsOverviewContainer from './components/collections-overview/collections.overview.container';
+import { checkUserSessionAction } from './redux/user/user.actions';
 
 class App extends React.Component {
-  unsubscribeFormAuth = null;
-
   componentDidMount() {
-    const { setCurrentUser } = this.props;
-    this.unsubscribeFormAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (!userAuth) {
-        setCurrentUser(userAuth);
-        return;
-      }
-      const userRef = await createUserProfileDocument(userAuth);
-      userRef.onSnapshot((snapShot) => {
-        setCurrentUser({
-          id: snapShot.id,
-          ...snapShot.data(),
-        });
-      });
-    });
+    const { checkUserSession } = this.props;
+    checkUserSession();
   }
-
-  componentWillUnmount() {
-    this.unsubscribeFormAuth();
-  }
-
   render() {
     return (
       <>
@@ -45,8 +25,8 @@ class App extends React.Component {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/shop/*" element={<ShopPage />}>
-            <Route path="" element={<CollectionsOverview />} />
-            <Route path=":collectionId" element={<CollectionPage />} />
+            <Route path="" element={<CollectionsOverviewContainer />} />
+            <Route path=":collectionId" element={<CollectionContainer />} />
           </Route>
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route
@@ -70,7 +50,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUserAction(user)),
+  checkUserSession: () => dispatch(checkUserSessionAction()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
