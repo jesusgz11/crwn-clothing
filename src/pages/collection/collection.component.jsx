@@ -1,5 +1,4 @@
-import { connect } from 'react-redux';
-import withParams from '../../components/with-params/with-params.component';
+import { useSelector } from 'react-redux';
 import { selectShopCollection } from '../../redux/shop/shop.selectors';
 import CollectionItem from '../../components/collection-item/collection-item.component';
 import {
@@ -7,10 +6,14 @@ import {
   CollectionTitle,
   ItemsContainer,
 } from './collection.styles';
-import { compose } from 'redux';
+import { useParams } from 'react-router-dom';
 
-const CollectionPage = ({ collection }) => {
-  const { title, items } = collection;
+const CollectionPage = () => {
+  const { collectionId } = useParams();
+  const collection = useSelector((state) =>
+    selectShopCollection(collectionId)(state)
+  );
+  const { items, title } = collection;
   return (
     <PageContainer>
       <CollectionTitle>{title}</CollectionTitle>
@@ -23,8 +26,4 @@ const CollectionPage = ({ collection }) => {
   );
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  collection: selectShopCollection(ownProps.params.collectionId)(state),
-});
-
-export default compose(withParams, connect(mapStateToProps))(CollectionPage);
+export default CollectionPage;
