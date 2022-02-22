@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -13,37 +13,31 @@ import CollectionContainer from './pages/collection/collection.container';
 import CollectionsOverviewContainer from './components/collections-overview/collections.overview.container';
 import { checkUserSessionAction } from './redux/user/user.actions';
 
-class App extends React.Component {
-  componentDidMount() {
-    const { checkUserSession } = this.props;
+const App = ({ checkUserSession, currentUser }) => {
+  useEffect(() => {
     checkUserSession();
-  }
-  render() {
-    return (
-      <>
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop/*" element={<ShopPage />}>
-            <Route path="" element={<CollectionsOverviewContainer />} />
-            <Route path=":collectionId" element={<CollectionContainer />} />
-          </Route>
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route
-            path="/signin"
-            element={
-              this.props.currentUser ? (
-                <Navigate replace to="/" />
-              ) : (
-                <SignInAndSignUpPage />
-              )
-            }
-          />
-        </Routes>
-      </>
-    );
-  }
-}
+  }, [checkUserSession]);
+
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/shop/*" element={<ShopPage />}>
+          <Route path="" element={<CollectionsOverviewContainer />} />
+          <Route path=":collectionId" element={<CollectionContainer />} />
+        </Route>
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route
+          path="/signin"
+          element={
+            currentUser ? <Navigate replace to="/" /> : <SignInAndSignUpPage />
+          }
+        />
+      </Routes>
+    </>
+  );
+};
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
