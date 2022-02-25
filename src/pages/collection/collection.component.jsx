@@ -10,9 +10,7 @@ import { useParams } from 'react-router-dom';
 
 const CollectionPage = () => {
   const { collectionId } = useParams();
-  const collection = useSelector((state) =>
-    selectShopCollection(collectionId)(state)
-  );
+  const collection = useSelector(selectShopCollection(collectionId));
   const { items, title } = collection;
   return (
     <PageContainer>
