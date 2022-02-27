@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ShopPage from './pages/shop/shop.component';
@@ -11,6 +10,7 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import CollectionContainer from './pages/collection/collection.container';
 import CollectionsOverviewContainer from './components/collections-overview/collections.overview.container';
 import { checkUserSessionAction } from './redux/user/user.actions';
+import GlobalStyle from './global.styles';
 
 const App = () => {
   const currentUser = useSelector(selectCurrentUser);
@@ -22,6 +22,7 @@ const App = () => {
 
   return (
     <>
+      <GlobalStyle />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
